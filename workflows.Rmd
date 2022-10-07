@@ -1,0 +1,30 @@
+---
+title: "Workflow Managers"
+author: "Mark Dunning"
+date: '`r format(Sys.time(), "Last modified: %d %b %Y")`'
+output:
+  html_notebook:
+    toc: yes
+    toc_float: yes
+    css: stylesheets/styles.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{bash}
+nextflow run nf-core/rnaseq -profile test \
+      --skip_alignment \
+      --skip_trimming \
+      --pseudo_aligner salmon \
+      --max_memory=1.GB\
+      --skip_deseq2_qc \
+      --skip_bbsplit \
+      --outdir nf_results 
+      
+
+      
+```
+
