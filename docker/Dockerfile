@@ -1,4 +1,4 @@
-FROM dorowu/ubuntu-desktop-lxde-vnc:bionic
+FROM centminmod/docker-ubuntu-vnc-desktop
 MAINTAINER Mark Dunning<m.j.dunning@sheffield.ac.uk>
 RUN apt-get update 
 RUN apt-get install --fix-missing -y git wget unzip curl r-base
@@ -47,9 +47,9 @@ RUN tar xvzf salmon-1.2.1_linux_x86_64.tar.gz
 RUN chmod +x /tmp/salmon-latest_linux_x86_64/bin/salmon
 RUN ln -s /tmp/salmon-latest_linux_x86_64/bin/salmon /usr/bin
 
-
-RUN curl -s https://get.nextflow.io | bash
-RUN ln -s /tmp/nextflow /usr/bin
+#
+#RUN curl -s https://get.nextflow.io | bash
+#RUN ln -s /tmp/nextflow /usr/bin
 
 ## Tidy up to remove temporary files etc
 
@@ -66,10 +66,12 @@ RUN mkdir -p /home/dcuser/rnaseq_data
 
 COPY downsampled_fastq.zip /home/dcuser/rnaseq_data
 COPY nf_samplesheet.csv /home/dcuser/rnaseq_data
+COPY test-datasets-rnaseq.zip /home/dcuser/rnaseq_data
 WORKDIR /home/dcuser/rnaseq_data
 
 RUN unzip downsampled_fastq.zip
 RUN rm downsampled_fastq.zip
+RUN unzip test-datasets-rnaseq.zip
 
 USER root
 RUN apt-get install -y man nano
