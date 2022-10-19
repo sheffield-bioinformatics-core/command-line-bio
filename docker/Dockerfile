@@ -60,4 +60,14 @@ RUN apt-get update && apt-get install -y software-properties-common sudo && \
 RUN curl -s https://get.nextflow.io | bash
 RUN ln -s /tmp/nextflow /usr/bin
 
-#USER 100
+RUN apt-get install -y gawk libcurl4-gnutls-dev
+RUN echo "deb http://cran.rstudio.com/bin/linux/ubuntu xenial/" | tee -a /etc/apt/sources.list
+RUN gpg --keyserver keyserver.ubuntu.com --recv-key E298A3A825C0D65DFD57CBB651716619E084DAB9
+RUN gpg -a --export E298A3A825C0D65DFD57CBB651716619E084DAB9 | apt-key add -
+RUN apt-get update
+RUN apt-get install -y r-base
+RUN R -e 'source("http://bioconductor.org/biocLite.R");biocLite(c("SummarizedExperiment","tximport","DESeq2"))'
+#USER 100R
+
+
+## http://localhost:6901/?password=vncpassword
