@@ -19,8 +19,6 @@ nextflow run nf-core/rnaseq -profile test \
       --skip_alignment \
       --skip_trimming \
       --pseudo_aligner salmon \
-      --max_memory=1.GB\
-      --skip_deseq2_qc \
       --skip_bbsplit \
       --outdir nf_results 
       
