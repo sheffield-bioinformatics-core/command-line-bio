@@ -1,14 +1,13 @@
-FROM centminmod/docker-ubuntu-vnc-desktop
+FROM consol/ubuntu-xfce-vnc
 MAINTAINER Mark Dunning<m.j.dunning@sheffield.ac.uk>
+USER 0
 RUN apt-get update 
-RUN apt-get install --fix-missing -y git wget unzip curl r-base
+RUN apt-get install --fix-missing -y git wget unzip curl r-base samtools default-jre build-essential zlib1g-dev
 WORKDIR /tmp
 RUN wget --no-check-certificate http://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.3.zip -P /tmp
 RUN unzip fastqc_v0.11.3.zip
 RUN chmod 755 FastQC/fastqc
 RUN ln -s $(pwd)/FastQC/fastqc /usr/bin/fastqc
-RUN apt-get install -y samtools default-jre build-essential python python-pip zlib1g-dev
-
 
 # Install miniconda
 ENV CONDA_DIR /opt/conda
@@ -47,36 +46,18 @@ RUN tar xvzf salmon-1.2.1_linux_x86_64.tar.gz
 RUN chmod +x /tmp/salmon-latest_linux_x86_64/bin/salmon
 RUN ln -s /tmp/salmon-latest_linux_x86_64/bin/salmon /usr/bin
 
-#
-#RUN curl -s https://get.nextflow.io | bash
-#RUN ln -s /tmp/nextflow /usr/bin
+#RUN curl -s "https://get.sdkman.io" | bash
+#RUN chmod +x /headless/.sdkman/bin/sdkman-init.sh
+#RUN /headless/.sdkman/bin/sdkman-init.sh
+#RUN sdk install java
 
-## Tidy up to remove temporary files etc
+RUN apt-get update && apt-get install -y software-properties-common sudo && \
+    add-apt-repository -y ppa:linuxuprising/java && \
+    apt-get update && \
+    echo oracle-java17-installer shared/accepted-oracle-license-v1-3 select true | sudo /usr/bin/debconf-set-selections && \
+    apt-get install -y oracle-java17-installer && \
+    apt install oracle-java17-set-default
+RUN curl -s https://get.nextflow.io | bash
+RUN ln -s /tmp/nextflow /usr/bin
 
-RUN rm /tmp/*.zip
-RUN rm /tmp/*.tar.gz
-
-
-RUN useradd dcuser -m -d /home/dcuser -G sudo -s /bin/bash
-RUN chown dcuser /home/dcuser
-
-USER dcuser
-RUN mkdir -p /home/dcuser/rnaseq_data
-
-
-COPY downsampled_fastq.zip /home/dcuser/rnaseq_data
-COPY nf_samplesheet.csv /home/dcuser/rnaseq_data
-COPY test-datasets-rnaseq.zip /home/dcuser/rnaseq_data
-WORKDIR /home/dcuser/rnaseq_data
-
-RUN unzip downsampled_fastq.zip
-RUN rm downsampled_fastq.zip
-RUN unzip test-datasets-rnaseq.zip
-
-USER root
-RUN apt-get install -y man nano
-## Attempt to make sure we enter the environment signed-in as 'dcuser'
-RUN echo "su - dcuser >> /etc/.basrc"
-RUN echo "cd /home/dcuser >> /etc/.bashrc"
-
-ENV DISPLAY=:1.0
+#USER 100
