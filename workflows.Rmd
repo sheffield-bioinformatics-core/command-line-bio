@@ -15,14 +15,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{bash}
-nextflow run nf-core/rnaseq -profile test \
+nextflow run nf-core/rnaseq -profile test,singularity \
       --skip_alignment \
       --skip_trimming \
       --pseudo_aligner salmon \
       --skip_bbsplit \
       --outdir nf_results 
-      
-
       
 ```
 
