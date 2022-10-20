@@ -60,14 +60,32 @@ RUN apt-get update && apt-get install -y software-properties-common sudo && \
 RUN curl -s https://get.nextflow.io | bash
 RUN ln -s /tmp/nextflow /usr/bin
 
-RUN apt-get install -y gawk libcurl4-gnutls-dev libxml2-dev libboost-dev
-RUN echo "deb http://cran.rstudio.com/bin/linux/ubuntu xenial/" | tee -a /etc/apt/sources.list
-RUN gpg --keyserver keyserver.ubuntu.com --recv-key E298A3A825C0D65DFD57CBB651716619E084DAB9
-RUN gpg -a --export E298A3A825C0D65DFD57CBB651716619E084DAB9 | apt-key add -
-RUN apt-get update
-RUN apt-get install -y r-base
-RUN R -e 'source("http://bioconductor.org/biocLite.R");biocLite(c("SummarizedExperiment","tximport","DESeq2"))'
-#USER 100R
 
+RUN apt-get update && sudo apt-get install -y \
+    build-essential \
+    libssl-dev \
+    uuid-dev \
+    libgpgme11-dev \
+    squashfs-tools \
+    libseccomp-dev \
+    wget \
+    pkg-config \
+    git \
+    cryptsetup \
+    glib2.0-dev
+
+RUN wget https://go.dev/dl/go1.19.2.linux-amd64.tar.gz  # Downloads the required Go package
+RUN tar -C /usr/local -xzvf go1.19.2.linux-amd64.tar.gz   # Extracts the archive
+ENV PATH=/usr/local/go/bin:$PATH
+RUN wget https://github.com/sylabs/singularity/releases/download/v3.10.3/singularity-ce-3.10.3.tar.gz
+RUN tar -xzf singularity-ce-3.10.3.tar.gz
+WORKDIR singularity-ce-3.10.3
+RUN ./mconfig && \
+  make -C builddir && \
+  make -C builddir install
+  
+WORKDIR /home
+
+##docker run --rm -d -p 5901:5901 -p 6901:6901 --privileged sheffieldbioinformatics/unixtraining
 
 ## http://localhost:6901/?password=vncpassword
