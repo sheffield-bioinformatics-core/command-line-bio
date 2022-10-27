@@ -86,6 +86,26 @@ RUN ./mconfig && \
   
 WORKDIR /home
 
-##docker run --rm -d -p 5901:5901 -p 6901:6901 --privileged sheffieldbioinformatics/unixtraining
+## Download nf.core cache images to make workflow quicker
+
+RUN mkdir singularity-cache
+RUN wget https://depot.galaxyproject.org/singularity/fastqc:0.11.9--0 -P singularity-cache/fastqc:0.11.9--0.img
+RUN wget https://depot.galaxyproject.org/singularity/bioconductor-summarizedexperiment:1.20.0--r40_0 -P singularity-cache/depot.galaxyproject.org-singularity-bioconductor-summarizedexperiment-1.20.0--r40_0.img
+RUN wget https://depot.galaxyproject.org/singularity/bioconductor-tximeta:1.8.0--r40_0 -P singularity-cache/depot.galaxyproject.org-singularity-bioconductor-tximeta-1.8.0--r40_0.img
+RUN wget https://depot.galaxyproject.org/singularity/multiqc:1.13--pyhdfd78af_0 -P singularity-cache/depot.galaxyproject.org-singularity-multiqc-1.13--pyhdfd78af_0.img
+RUN wget https://depot.galaxyproject.org/singularity/perl:5.26.2 -P singularity-cache/depot.galaxyproject.org-singularity-perl-5.26.2.img
+RUN wget https://depot.galaxyproject.org/singularity/python:3.9--1 -P singularity-cache/depot.galaxyproject.org-singularity-python-3.9--1.img
+RUN wget https://depot.galaxyproject.org/singularity/salmon:1.5.2--h84f40af_0 -P singularity-cache/depot.galaxyproject.org-singularity-salmon-1.5.2--h84f40af_0.img
+RUN wget https://depot.galaxyproject.org/singularity/samtools:1.15.1--h1170115_0 -P singularity-cache/depot.galaxyproject.org-singularity-samtools-1.15.1--h1170115_0.img
+RUN wget https://depot.galaxyproject.org/singularity/ubuntu:20.04 -P singularity-cache/depot.galaxyproject.org-singularity-ubuntu-20.04.img
+#RUN wget https://depot.galaxyproject.org/singularity/mulled:v2-8849acf39a43cdd6c839a369a74c0adc823e2f91-ab110436faf952a33575c64dd74615a84011450b--0 -P singularity-cache/depot.galaxyproject.org-singularity-mulled-v2-8849acf39a43cdd6c839a369a74c0adc823e2f91-ab110436faf952a33575c64dd74615a84011450b-0.img
+
+
+ENV NXF_SINGULARITY_CACHEDIR=/home/singularity-cache
+## build command
+##docker build -t="sheffieldbioinformatics/unix-training ."
+
+## run command
+##docker run -v `PWD`:/data --rm -d -p 5901:5901 -p 6901:6901 --privileged sheffieldbioinformatics/unix-training
 
 ## http://localhost:6901/?password=vncpassword

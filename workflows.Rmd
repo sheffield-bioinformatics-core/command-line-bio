@@ -15,6 +15,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{bash}
+export NXF_SINGULARITY_CACHEDIR=/home/singularity-cache
+
 nextflow run nf-core/rnaseq -profile test,singularity \
       --skip_alignment \
       --skip_trimming \
