@@ -2,7 +2,7 @@ FROM consol/ubuntu-xfce-vnc
 MAINTAINER Mark Dunning<m.j.dunning@sheffield.ac.uk>
 USER 0
 RUN apt-get update 
-RUN apt-get install --fix-missing -y git wget unzip curl r-base samtools default-jre build-essential zlib1g-dev
+RUN apt-get install --fix-missing -y git wget unzip curl r-base samtools default-jre build-essential zlib1g-dev bwa nano dos2unix
 WORKDIR /tmp
 RUN wget --no-check-certificate http://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.3.zip -P /tmp
 RUN unzip fastqc_v0.11.3.zip
@@ -46,10 +46,7 @@ RUN tar xvzf salmon-1.2.1_linux_x86_64.tar.gz
 RUN chmod +x /tmp/salmon-latest_linux_x86_64/bin/salmon
 RUN ln -s /tmp/salmon-latest_linux_x86_64/bin/salmon /usr/bin
 
-#RUN curl -s "https://get.sdkman.io" | bash
-#RUN chmod +x /headless/.sdkman/bin/sdkman-init.sh
-#RUN /headless/.sdkman/bin/sdkman-init.sh
-#RUN sdk install java
+## install nextflow
 
 RUN apt-get update && apt-get install -y software-properties-common sudo && \
     add-apt-repository -y ppa:linuxuprising/java && \
@@ -60,6 +57,8 @@ RUN apt-get update && apt-get install -y software-properties-common sudo && \
 RUN curl -s https://get.nextflow.io | bash
 RUN ln -s /tmp/nextflow /usr/bin
 
+
+## install singularity
 
 RUN apt-get update && sudo apt-get install -y \
     build-essential \
@@ -105,12 +104,23 @@ ENV NXF_SINGULARITY_CACHEDIR=/home/singularity-cache
 
 RUN mkdir /data
 WORKDIR /data
-RUN git clone https://github.com/nf-core/test-datasets.git --single-branch --branch rnaseq /data/
-COPY samplesheet_test.csv /data
+
+RUN mkdir /data/ref_data
+COPY Homo_sapiens.GRCh38.cdna.chr22.fa /data/ref_data
+COPY Homo_sapiens.GRCh38.108.chr22.gtf  /data/ref_data
+
+
+RUN mkdir /data/scripts
+RUN mkdir /data/fastq
+COPY nf_samplesheet.csv /data/
+COPY fastq/*_sub.fastq.gz /data/fastq
+COPY scripts/* /data/scripts
+RUN dos2unix scripts/run_nextflow.sh
+
 ## build command
 ##docker build -t="sheffieldbioinformatics/unix-training ."
 
 ## run command
-##docker run -v `PWD`:/data --rm -d -p 5901:5901 -p 6901:6901 --privileged sheffieldbioinformatics/unix-training
+##docker run -v --rm -d -p 5901:5901 -p 6901:6901 --privileged sheffieldbioinformatics/unix-training
 
 ## http://localhost:6901/?password=vncpassword

@@ -124,19 +124,42 @@ md5sum fastq/Sample1/Sample1.fastq
 md5sum --help
 ```
 
-> ## Challenge 1 {.challenge}
->
-> 1. Download the pre-computed md5sums available at `http://sbc.shef.ac.uk/data/archive_md5.txt`. 
-> 2. Print the contents of this file and verify that the sum for Sample1.fastq is correct
-> 3. The md5sum command is able to check the md5sums for a collection of files against some pre-computed values. Use documentation (and google!) to discover how to do this for the files we have downloaded.
+## Challenge 1 {.challenge}
 
-### Digression  - Obtaining public data
+<div class="exercise">
+ 1. Download the pre-computed md5sums available at `http://sbc.shef.ac.uk/data/archive_md5.txt`. 
+ 2. Print the contents of this file and verify that the sum for Sample1.fastq is correct
+ 3. The md5sum command is able to check the md5sums for a collection of files against some pre-computed values. Use documentation (and google!) to discover how to do this for the files we have downloaded.
+</div>
+
+##  Obtaining public data
 
 A good resource for obtaining public data is the SRA explorer.
 
 - [https://sra-explorer.info/](https://sra-explorer.info/)
 
-In the Search box you can enter the accession number of a study (usually quoted in the published paper), to obtain download links for all the fastq files. It will even generate a bash script for you to run.
+In the Search box you can enter the accession number of a study (usually quoted in the published paper), to obtain download links for all the fastq files. It will even generate a bash script for you to run. 
+
+The data for this tutorial comes from the paper, [*Induction of fibroblast senescence generates a non-fibrogenic myofibroblast phenotype that differentially impacts on cancer prognosis.*](http://europepmc.org/article/MED/27992856). 
+
+> Cancer associated fibroblasts characterized by an myofibroblastic phenotype play a major role in the tumour microenvironment, being associated with poor prognosis. We found that this cell population is made in part by senescent fibroblasts in vivo. As senescent fibroblasts and myofibroblasts have been shown to share similar tumour promoting functions in vitro we compared the transcriptosomes of these two fibroblast types and performed RNA-seq of human foetal foreskin fibroblasts 2 (HFFF2) treated with 2ng/ml TGF-beta-1 to induce myofibroblast differentiation or 10Gy gamma irradiation to induce senescence. We isolated RNA 7 days upon this treatments changing the medium 3 days before the RNA extraction.
+
+
+The paper states a particular *accession number* that can be used to access the data
+
+- **E-MTAB-3101**
+
+This ID can be used to find the data on ArrayExpress, but is also recognised by SRA explorer (you don't need the **[All fields]** text shown in the screenshot). Gene Expression Omnibus (**GSE..**) or Sequencing Read Archive (**SRP...**) identifiers are also recognised.
+
+![](images/sra_explorer.PNG)
+
+If the identifier is recognised the names of samples belonging to the dataset will be shown. These can be selected and added to a collection. From the saved datasets button (top-right) the user can then access download links.
+
+For this particular dataset we created a download script using the links provided by SRA explorer. To keep the run-time of the workshop short (and to keep computing requirements down), each raw file was subset to a more manageable amount.
+
+<div class="information">
+The code used to download the example dataset can be found in `/data/scripts/download_subset.sh`. You do not need to run this as part of the workshop - it is just for information, or if you wanted to repeat the workshop in your own environment.
+</div>
 
 ### Using sharc (**UoS-specific**)
 
@@ -195,7 +218,7 @@ We will be working with a set of sample data that is located in the directory (`
 Navigate to your FASTQ dataset: 
 
 ```{bash eval=FALSE}
-cd ~/rnaseq_data/
+cd /data/
 ```
 
 
@@ -224,9 +247,9 @@ progress of the analysis. It will start like this:
 
 
 ```
-Started analysis of SRR1552444.fastq.gz
-Approx 100% complete for SRR1552444.fastq.gz
-Analysis complete for SRR1552444.fastq.gz
+Started analysis of ERR732901.fastq.gz
+Approx 100% complete for ERR732901.fastq.gz
+Analysis complete for ERR732901.fastq.gz
 
 ```
 
@@ -267,17 +290,13 @@ with these output files soon. The `.html` file is a stable webpage
 displaying the summary report for each of our samples.
 
 We want to keep our data files and our results files separate, so we
-will move these
-output files into a new directory within our `results/` directory. If this directory does not exist, we will have to create it.
-
-
-
+will move these output files into a new directory within our `results/` directory. If this directory does not exist, we will have to create it.
 
 ```{bash eval=FALSE}
 ## -p flag stops a message from appearing if the directory already exists
-mkdir -p results
-mv *.html results/
-mv *.zip results/
+mkdir -p qc
+mv fastq/*.html qc/
+mv fastq/*.zip qc/
 ```
 
 
@@ -293,11 +312,12 @@ multiqc --help
 ```
 
 
-> ## Challenge 2 {.challenge}
-> 
-> Use the multiqc tool to create a single QC report for the dataset.
-> Look at the help for the tool, and figure out how to run the tool on the fastqc output we have just generated. Make sure that `multiqc` creates saves the report file in the `results` folder.
+## Challenge 2 {.challenge}
 
+<div class="exercise"> 
+Use the multiqc tool to create a single QC report for the dataset.
+Look at the help for the tool, and figure out how to run the tool on the fastqc output we have just generated. Make sure that `multiqc` creates saves the report file in the `qc` folder.
+</div>
 
 The environment that we are working inside includes a version of the Firefox web browser. We can open a particular HTML file with firefox using the command:-
 
@@ -307,10 +327,10 @@ firefox results/SRR1552444_fastqc.html
 
 If this doesn't work, there is a File Explorer tool available in the desktop environment that you can use to navigate to, and view the files.
 
-> ## Challenge 3 {.challenge}
-> 
-> Discuss your results with a neighbour. Which sample(s) looks the best
-> in terms of per base sequence quality? Which sample(s) look the
-> worst?
-> 
+## Challenge 3 {.challenge}
+<div class="exercise"> 
+Discuss your results with a neighbour. 
+- Which samples most the highest / lowest number of reads
+- Which sample(s) looks the best in terms of per base sequence quality? - Which sample(s) look the worst?
+</div>
 

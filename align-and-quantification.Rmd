@@ -31,7 +31,7 @@ A much reduced dataset will be used for illustration although the commands used 
 We first make sure that we are located in the directory with our fastq files
 
 ```{bash eval=FALSE}
-cd ~/rnaseq_data
+cd /data
 ls
 ```
 
@@ -49,15 +49,12 @@ Files can be downloaded by clicking on the relevant link. However, we want to do
 
 <img src="images/cdna_download.png"/>
 
-The following commands should download reference data from Ensembl into a newly-created `ref_data` folder. It is good practice to keep your reference data stored in a sub-folder. *However, check first (with I.T or local Bioinformaticians) that you don't have a local copy of reference genomes on your file system*
+We have already put some reference data in the `ref_data` folder, but not the reference DNA sequence for Human Chromosome 22 *However, check first (with I.T or local Bioinformaticians) that you don't have a local copy of reference genomes on your file system*
 
-```{bash eval=FALSE}
-mkdir ref_data
-wget ftp://ftp.ensembl.org/pub/release-91/fasta/mus_musculus/cdna/Mus_musculus.GRCm38.cdna.all.fa.gz -P ref_data/
-wget ftp://ftp.ensembl.org/pub/release-91/gtf/mus_musculus/Mus_musculus.GRCm38.91.chr.gtf.gz -P ref_data
-wget ftp://ftp.ensembl.org/pub/release-91/fasta/mus_musculus/dna/Mus_musculus.GRCm38.dna.chromosome.1.fa.gz -P ref_data/
-```
-
+## Exercise
+<div class="exercise">
+Download the dna sequence for chromosome 22 of the GRCh38 human genome into the `ref_data` folder. Why does the file have a `.gz` at the end of it's name? What does this mean?
+</div>
 
 
 ## Workflow 1: Quantify the transcripts with salmon
@@ -79,7 +76,7 @@ genomic variation from the reference sequence
 `salmon` requires the user to create an index from the `fasta` file of the transcripts. We have to specify a *prefix* name for all the files that `salmon` is going to create. 
 
 ```{bash eval=FALSE}
-salmon index -i index/GRCm38_salmon -t ref_data/Mus_musculus.GRCm38.cdna.all.fa.gz
+salmon index -i index/GRCh38_salmon -t ref_data/Homo_sapiens.GRCh38.cdna.chr22.fa
 ```
 
 The quasi-mapping approach of `salmon` can be run with the `salmon quant` command. Help on running this tool can be displayed with the following command.
@@ -91,7 +88,7 @@ salmon quant --help-reads
 We need to specify the path of the index we have just created in the previous step, locations of our `fastq` files, and the library type (if unsure the option A can be used. See the help page for more options https://salmon.readthedocs.io/en/latest/salmon.html#what-s-this-libtype). We can specify where `salmon` write it's output files to, but this directory does not need to exist prior to running the command.
 
 ```{bash eval=FALSE}
-salmon quant -i index/GRCm38_salmon --libType A -r SRR1552444.fastq.gz -o quant/SRR1552444
+salmon quant -i index/GRCm38_salmon --libType A -r ERR732901_sub.fastq.gz -o quant/ERR732901
 
 ```
 
