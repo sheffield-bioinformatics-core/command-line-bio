@@ -13,18 +13,19 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Alignment and Quantification
+# Genome Alignment
+
+
+
+# Alignment vs. Quantification
 
 Two workflows are possible with RNA-seq data - with the difference being whether one performs an alignment to the reference genome or not.
 
-Recent tools for RNA-seq analysis (e.g. `salmon`, `kallisto`) do not require the time-consuming step of whole-genome alignment to be performed, and can therefore produce gene-level counts in a much faster time frame. They not require the creation of large bam files, which is useful if constrained by file space on Galaxy.
+Recent tools for RNA-seq analysis (e.g. `salmon`, `kallisto`) do not require the time-consuming step of whole-genome alignment to be performed, and can therefore produce gene-level counts in a much faster time frame. 
 
 ![](https://hbctraining.github.io/Intro-to-rnaseq-hpc-gt/img/alignmentfree_workflow_aug2017.png)
 
 (image from Harvard Bioinformatics Core)
-
-
-We will demonstrate both methods, but for further analysis in R we will use counts that have been generated with `salmon`. 
 
 A much reduced dataset will be used for illustration although the commands used can applied to more-realistic sizes of data.
 
@@ -35,9 +36,13 @@ cd /data
 ls
 ```
 
-We will need some reference data for the alignment, and a good place to obtain these data is from Ensembl. 
+We will typically need some reference data for the alignment. These files have already been provided for you, but it good to know where they might be obtained.
 
-Links to downloads for a variety of different organisms can be found at https://www.ensembl.org/info/data/ftp/index.html. We can navigate to the particular organism we are interested in through the interface and download the transcript and genome sequences to our laptop. However, we need the reference files to be present on the remote server that we are performing the analysis on.
+Links to downloads for a variety of different organisms can be found at https://www.ensembl.org/info/data/ftp/index.html. We can navigate to the particular organism we are interested in through the interface and download the transcript and genome sequences to our laptop. 
+
+<div class="information">
+If you are running this workshop in-person using the cloud-based environment, make sure to use web-browse within the environment to access the Ensembl FTP site.
+</div>
 
 The command `wget` can be used to download a file from an FTP site to a local directory if you know the path to the file (URL). This path could be obtained by first locating the file in Ensembl and right-clicking to copy the link address.
 
@@ -49,11 +54,15 @@ Files can be downloaded by clicking on the relevant link. However, we want to do
 
 <img src="images/cdna_download.png"/>
 
-We have already put some reference data in the `ref_data` folder, but not the reference DNA sequence for Human Chromosome 22 *However, check first (with I.T or local Bioinformaticians) that you don't have a local copy of reference genomes on your file system*
+
+<div class="information">
+*To avoid duplication. check first (with I.T or local Bioinformaticians) that you don't have a local copy of reference genomes on your file system*
+</div>
 
 ## Exercise
 <div class="exercise">
-Download the dna sequence for chromosome 22 of the GRCh38 human genome into the `ref_data` folder. Why does the file have a `.gz` at the end of it's name? What does this mean?
+We will also need the Human reference genome sequence for chromosome 22. Download the repeat-masked (`rm`) version of this sequence to the `ref_data` folder.
+
 </div>
 
 
@@ -98,18 +107,37 @@ salmon quant -i index/GRCm38_salmon --libType A -r ERR732901_sub.fastq.gz -o qua
 > What file contains the quantifications? 
 > Use the salmon documentation to understand the various output files https://salmon.readthedocs.io/en/latest/file_formats.html#fileformats
 
-### Running for all samples
+## Workflow 2: Genome Alignment
 
-If we want to repeat the quantification step for all our samples, we could employ a `for` loop as we have seen previously. 
+<div class="information">
+If time is running short, this section may be omitted or covered quickly. Our preferred workflow is to use salmon as described above.
+</div>
+
 
 ```{bash eval=FALSE}
+hisat2-build ref_data/Homo_sapiens.GRCh38.cdna.chr22.fa index/hisat2
+hisat2 -x index/hisat2 -U fastq/ERR732901_sub.fastq.gz aligned_reads/ERR732901.sam
 
-for filename in *.fastq.gz
-do
-name=$(basename $filename .fastq.gz)
-salmon quant -i index/GRCm38_salmon --libType A -r $filename.fastq.gz -o quant/$name
-gzip quant/$name/quant.sf
-done
+```
 
+```{bash}
+samtools view -bS aligned_reads/ERR732901.sam > aligned_reads/ERR732901.bam
+samtools sort aligned_reads/ERR732901.bam aligned_reads/ERR732901.bam
+samtools index aligned_reads/ERR732901.sorted.bam
+```
+
+```{bash}
+samtools flagstat aligned_reads/ERR732901.sorted.bam
+samtools index aligned_reads/ERR732901.sorted.bam
+```
+
+### Counting features
+
+We will use the `featureCounts` tool to obtain transcript-level counts for the aligned reads that we have just created. This requires that `gtf` files that we downloaded from Ensembl earlier and our newly-created bam file.
+
+
+```{bash eval=FALSE}
+mkdir featureCounts
+featureCounts -a ref_data/Homo_sapiens.GRCh38.108.chr22.gtf -o featureCounts/SRR1552444.counts aligned_reads/SRR1552444.sorted.bam
 ```
 
