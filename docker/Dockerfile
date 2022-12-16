@@ -46,6 +46,16 @@ RUN tar xvzf salmon-1.2.1_linux_x86_64.tar.gz
 RUN chmod +x /tmp/salmon-latest_linux_x86_64/bin/salmon
 RUN ln -s /tmp/salmon-latest_linux_x86_64/bin/salmon /usr/bin
 
+RUN wget http://ccb.jhu.edu/software/hisat2/dl/hisat2-2.1.0-Linux_x86_64.zip
+RUN unzip hisat2-2.1.0-Linux_x86_64.zip
+RUN ln -s /tmp/hisat2-2.1.0/hisat2 /usr/bin
+RUN ln -s /tmp/hisat2-2.1.0/hisat2-build /usr/bin
+RUN wget -O subread.tar.gz https://sourceforge.net/projects/subread/files/subread-1.6.3/subread-1.6.3-Linux-x86_64.tar.gz/download
+RUN tar zxvf subread.tar.gz
+RUN ln -s /tmp/subread-1.6.3-Linux-x86_64/bin/* /usr/bin
+
+
+
 ## install nextflow
 
 RUN apt-get update && apt-get install -y software-properties-common sudo && \
@@ -113,9 +123,12 @@ COPY Homo_sapiens.GRCh38.108.chr22.gtf  /data/ref_data
 RUN mkdir /data/scripts
 RUN mkdir /data/fastq
 COPY nf_samplesheet.csv /data/
-COPY fastq/*_sub.fastq.gz /data/fastq
-COPY scripts/* /data/scripts
+COPY fastq/*_sub.fastq.gz /data/fastq/
+COPY scripts/* /data/scripts/
 RUN dos2unix scripts/run_nextflow.sh
+
+
+
 
 ## build command
 ##docker build -t="sheffieldbioinformatics/unix-training ."
