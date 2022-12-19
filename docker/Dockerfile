@@ -52,7 +52,7 @@ RUN ln -s /tmp/hisat2-2.2.1/hisat2 /usr/bin
 RUN ln -s /tmp/hisat2-2.2.1/hisat2-build /usr/bin
 RUN wget --no-check-certificate -O  subread.tar.gz https://sourceforge.net/projects/subread/files/subread-2.0.3/subread-2.0.3-Linux-x86_64.tar.gz/download
 RUN tar zxvf subread.tar.gz
-RUN ln -s /tmp/subread-1.6.3-Linux-x86_64/bin/* /usr/bin
+RUN ln -s /tmp/subread-2.0.3-Linux-x86_64/bin/* /usr/bin
 
 
 
@@ -120,14 +120,23 @@ COPY Homo_sapiens.GRCh38.cdna.chr22.fa /data/ref_data
 COPY Homo_sapiens.GRCh38.108.chr22.gtf  /data/ref_data
 
 
+
+WORKDIR /tmp
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+RUN unzip awscliv2.zip
+RUN sudo ./aws/install
+RUN curl -fsSL https://ewels.github.io/AWS-iGenomes/aws-igenomes.sh > /usr/bin/aws-igenomes.sh
+RUN chmod +x /usr/bin/aws-igenomes.sh
+
+WORKDIR /data
+
+
 RUN mkdir /data/scripts
 RUN mkdir /data/fastq
 COPY nf_samplesheet.csv /data/
 COPY fastq/*_sub.fastq.gz /data/fastq/
 COPY scripts/* /data/scripts/
 RUN dos2unix scripts/run_nextflow.sh
-
-
 
 
 ## build command

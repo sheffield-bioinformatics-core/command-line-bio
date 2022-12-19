@@ -7,4 +7,5 @@ nextflow run nf-core/rnaseq -profile singularity \
 --transcript_fasta ref_data/Homo_sapiens.GRCh38.cdna.chr22.fa \
 --gtf ref_data/Homo_sapiens.GRCh38.108.chr22.gtf \
 --salmon_index index/GRCh38_salmon \
---outdir nf_results 
+--outdir nf_results \
+--max_memory 2GB

@@ -1,5 +1,5 @@
 ---
-title: "Workflow Managers"
+title: "Workflows, Pipeline and Workflow Managers"
 author: "Mark Dunning"
 date: '`r format(Sys.time(), "Last modified: %d %b %Y")`'
 output:
@@ -13,19 +13,120 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Why do we need a pipeline? How might we create one?
+
+We have now learnt a few commands that, when joined together, can form the basis for a minimal analysis pipeline
+
+- use `fastqc` to create QC reports for each sample
+- use `multiqc` to combine the QC
+- index a reference transcriptome using `salmon`
+- produce a set of quantified genes using `salmon`
+
+The next natural step would be to record these commands in a *script* so that we can document our analysis and re-run as required. We don't usually have a text editor in our Unix environment, so it is good practice to create and edit the script using the command-line. The `nano` editor is commonly-found on Unix systems and running the command `nano` with a file name will create that file if it does not exist.
 
 ```{bash}
-export NXF_SINGULARITY_CACHEDIR=/home/singularity-cache
-
-nextflow run nf-core/rnaseq -profile singularity \
-      --skip_alignment \
-      --skip_trimming \
-      --pseudo_aligner salmon \
-      --input nf_samplesheet.csv \
-      --fasta ref_data/Homo_sapiens.GRCh38.dna_rm.chromosome.22.fa \
-      --transcript_fasta ref_data/Homo_sapiens.GRCh38.cdna.chr22.fa \
-      --gtf ref_data/Homo_sapiens.GRCh38.108.chr22.gtf \
-      --salmon_index index/GRCh38_salmon \
-      --outdir nf_results 
+nano analysis_script.sh
 ```
+
+**Enter the following in the nano window that appears**
+
+```{bash}
+fastqc fastq/*.fastq.gz
+mkdir -p qc/
+mv fastq/*.html qc/
+mv fastq/*.zip qc
+multiqc -f -o qc/ qc
+```
+
+Press **CTRL + X** following by **Y** (when asked if you want to save the modified buffer) to return to the terminal.
+
+We can execute the script using the `bash` command
+
+```{bash}
+## remove qc directory first, so we can see the script in action
+rm -r qc/
+ls -l
+bash analysis_script.sh
+```
+
+This will run through the QC steps of the pipeline. The next stage would be to add the steps for `salmon` quantification. Since we want the ability to re-run the whole pipeline from scratch if required, we need to add the step to create the salmon index
+
+```{bash}
+salmon index -i index/GRCh38_salmon -t ref_data/Homo_sapiens.GRCh38.cdna.chr22.fa
+salmon quant -i index/GRCh38_salmon --libType A -r fastq/ERR732901_sub.fastq.gz -o quant/ERR732901
+```
+
+Our pipeline is already quite short and is running on a small dataset, but already it is taking a little while to run. The pipeline has been written in a linear fashion, so that each step must be completed in order. If our salmon alignment code needed to be changed we would have to re-run all the QC. This is not a huge problem here, but could be quite inefficient for a more-realistic dataset.
+
+We also have a number of options for how to proceed with quantifying the remaining samples. The simplest approach copy-and-paste the `salmon quant` line with different sample names
+
+```{bash}
+salmon quant -i index/GRCh38_salmon --libType A -r fastq/ERR732902_sub.fastq.gz -o quant/ERR732902
+salmon quant -i index/GRCh38_salmon --libType A -r fastq/ERR732903_sub.fastq.gz -o quant/ERR732903
+###etc....
+
+```
+
+This is not particularly satisfactory as it is prone to typo errors. An alternative might be to employ a *for loop*, which you might have [come across previously](https://datacarpentry.org/shell-genomics/04-redirection/index.html). Ultimately, we will not do either as we are going to use a specific type of program for running our pipeline.
+
+# Why do we need a workflow manager
+
+As we have discussed, there are a number of options to extend our pipeline to multiple samples. These require more programming knowledge than we might be comfortable with. There are a few other issues with the script that we have created.
+
+- As pipeline steps have to be re-run in sequence; even if the initial pipeline steps ran sucessfully they will still be re-run every time
+- There is no error-checking. 
+- The pipeline will not neccesarily run on another environment as it will assume that the `fastqc`, `multiqc` and `salmon` tools can be found.
+
+None of these issues are impossible to solve, but this isn't intended to be a workshop on software development best-practice. 
+
+**In reality, we would recommend people re-using existing analysis pipelines rather than writing their own**. We will look at an example using the nextflow workflow manager, although similar tools such as snakemake are also popular in Bioinformatics
+
+- [nextflow](https://www.nextflow.io/)
+- [snakemake](https://snakemake.readthedocs.io/en/stable/)
+
+## Running a nf.core pipeline
+
+In our opinion, nextflow is particular appealing as many popular Bioinformatics pipelines have already been written using nextflow and have been distributed as part of the nf.core project
+
+- [nf.core homepage](https://nf-co.re/)
+
+We will be showing the RNA-seq pipeline in particular
+
+![](https://raw.githubusercontent.com/nf-core/rnaseq/3.9/docs/images/nf-core-rnaseq_metro_map_grey.png)
+We have customised some of the options of the pipeline so run a reduced number of steps
+
+```{bash}
+cat scripts/run_nextflow.sh
+```
+
+The particular steps that we have modified are as follows:-
+
+```
+## Skip aligning to the whole genome
+--skip_alignment \
+## Skip trimming read sequences
+--skip_trimming \
+## use the salmon quantification tool
+--pseudo_aligner salmon \
+## Use our own set of references rather than downloading
+--fasta ref_data/Homo_sapiens.GRCh38.dna_rm.chromosome.22.fa \
+--transcript_fasta ref_data/Homo_sapiens.GRCh38.cdna.chr22.fa \
+--gtf ref_data/Homo_sapiens.GRCh38.108.chr22.gtf \
+--salmon_index index/GRCh38_salmon \
+```
+
+The files that we want to analyse are defined in a sample sheet. The format of the sheet is checked by the pipeline as one of the first steps. The column names have to match *exactly* what the pipeline expects.
+
+The output from the workflow will be written to a directory `nf_results`, which doesn't need to exist before the pipeline has been run. You should also see that a `work` directory is created.
+
+
+<div class="exercise">
+Run the script `run_nextflow.sh` (around ~10 minutes) and afterwards look at the output in the `nf_results` folder and familiarise yourself with the outputs. What extra steps have been performed in additon to the script that we created earlier?
+</div>
+
+<div class="exercise">
+There are two fastq files in our `fastq` folder that have not yet been analysed; `ERR732908` and `ERR732909`. Modify the samplesheet `nf_samplesheet.csv` to include information about these file, and re-run the pipeline. What do you notice about the time taken to run the pipeline?
+</div>
+
+## What is the `singularity` option about?
 
