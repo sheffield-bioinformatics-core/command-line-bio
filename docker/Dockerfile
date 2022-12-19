@@ -46,11 +46,11 @@ RUN tar xvzf salmon-1.2.1_linux_x86_64.tar.gz
 RUN chmod +x /tmp/salmon-latest_linux_x86_64/bin/salmon
 RUN ln -s /tmp/salmon-latest_linux_x86_64/bin/salmon /usr/bin
 
-RUN wget http://ccb.jhu.edu/software/hisat2/dl/hisat2-2.1.0-Linux_x86_64.zip
-RUN unzip hisat2-2.1.0-Linux_x86_64.zip
-RUN ln -s /tmp/hisat2-2.1.0/hisat2 /usr/bin
-RUN ln -s /tmp/hisat2-2.1.0/hisat2-build /usr/bin
-RUN wget -O subread.tar.gz https://sourceforge.net/projects/subread/files/subread-1.6.3/subread-1.6.3-Linux-x86_64.tar.gz/download
+COPY hisat2-2.2.1-Linux_x86_64.zip /tmp
+RUN unzip hisat2-2.2.1-Linux_x86_64.zip
+RUN ln -s /tmp/hisat2-2.2.1/hisat2 /usr/bin
+RUN ln -s /tmp/hisat2-2.2.1/hisat2-build /usr/bin
+RUN wget --no-check-certificate -O  subread.tar.gz https://sourceforge.net/projects/subread/files/subread-2.0.3/subread-2.0.3-Linux-x86_64.tar.gz/download
 RUN tar zxvf subread.tar.gz
 RUN ln -s /tmp/subread-1.6.3-Linux-x86_64/bin/* /usr/bin
 
