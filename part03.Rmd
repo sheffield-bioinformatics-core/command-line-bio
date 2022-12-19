@@ -10,7 +10,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,eval=FALSE)
 ```
 
 # Why do we need a pipeline? How might we create one?
@@ -120,13 +120,21 @@ The files that we want to analyse are defined in a sample sheet. The format of t
 The output from the workflow will be written to a directory `nf_results`, which doesn't need to exist before the pipeline has been run. You should also see that a `work` directory is created.
 
 
+## Exercise
 <div class="exercise">
 Run the script `run_nextflow.sh` (around ~10 minutes) and afterwards look at the output in the `nf_results` folder and familiarise yourself with the outputs. What extra steps have been performed in additon to the script that we created earlier?
 </div>
 
+You should notice that the nf.core pipeline has produced quantification files for each sample, and also combined the `salmon` outputs into a single file. It also run some QC plots from the DESeq2 R package. However, R is not part of our software environment.
+
+```
+which R
+```
+
+## Exercise
 <div class="exercise">
 There are two fastq files in our `fastq` folder that have not yet been analysed; `ERR732908` and `ERR732909`. Modify the samplesheet `nf_samplesheet.csv` to include information about these file, and re-run the pipeline. What do you notice about the time taken to run the pipeline?
 </div>
 
-## What is the `singularity` option about?
+Adding the `resume` option to the script
 

@@ -2,7 +2,7 @@ FROM consol/ubuntu-xfce-vnc
 MAINTAINER Mark Dunning<m.j.dunning@sheffield.ac.uk>
 USER 0
 RUN apt-get update 
-RUN apt-get install --fix-missing -y git wget unzip curl r-base samtools default-jre build-essential zlib1g-dev bwa nano dos2unix
+RUN apt-get install --fix-missing -y git wget unzip curl samtools default-jre build-essential zlib1g-dev bwa nano dos2unix
 WORKDIR /tmp
 RUN wget --no-check-certificate http://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.3.zip -P /tmp
 RUN unzip fastqc_v0.11.3.zip
