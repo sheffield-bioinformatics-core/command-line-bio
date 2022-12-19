@@ -121,12 +121,21 @@ The output from the workflow will be written to a directory `nf_results`, which 
 
 
 <div class="exercise">
-Run the script `run_nextflow.sh` (around ~10 minutes) and afterwards look at the output in the `nf_results` folder and familiarise yourself with the outputs. What extra steps have been performed in additon to the script that we created earlier?
+**Exercise**
+Run the script `run_nextflow.sh` (around ~10 minutes) and afterwards look at the output in the `nf_results` folder and familiarise yourself with the outputs. What extra steps have been performed in addition to the script that we created earlier?
 </div>
+
+## Re-running the pipeline
 
 <div class="exercise">
-There are two fastq files in our `fastq` folder that have not yet been analysed; `ERR732908` and `ERR732909`. Modify the samplesheet `nf_samplesheet.csv` to include information about these file, and re-run the pipeline. What do you notice about the time taken to run the pipeline?
+**Exercise**
+There are two fastq files in our `fastq` folder that have not yet been analysed; `ERR732908` and `ERR732909`. Use the `nano` editor to modify the samplesheet `nf_samplesheet.csv` to include information about these file, and re-run the pipeline. What do you notice about the time taken to run the pipeline?
 </div>
 
-## What is the `singularity` option about?
+
+<div class="exercise">
+**Exercise**
+Delete the salmon output directory and re-run the pipeline. What do you notice?
+</div>
+
 
