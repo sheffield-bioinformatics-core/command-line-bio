@@ -10,7 +10,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,eval=FALSE)
 ```
 
 (Adapted from the Data Carpentry Genomics wrangling materials at:- https://datacarpentry.org/wrangling-genomics/02-quality-control/index.html)
