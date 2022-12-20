@@ -133,10 +133,12 @@ WORKDIR /data
 
 RUN mkdir /data/scripts
 RUN mkdir /data/fastq
-COPY nf_samplesheet.csv /data/
-COPY fastq/*_sub.fastq.gz /data/fastq/
 COPY scripts/* /data/scripts/
 RUN dos2unix scripts/run_nextflow.sh
+RUN dos2unix scripts/get_ref_for_nextflow.sh
+COPY nf_samplesheet.csv /data/
+COPY fastq/*_sub.fastq.gz /data/fastq/
+
 
 
 ## build command

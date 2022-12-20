@@ -93,6 +93,9 @@ In our opinion, nextflow is particular appealing as many popular Bioinformatics 
 We will be showing the RNA-seq pipeline in particular
 
 ![](https://raw.githubusercontent.com/nf-core/rnaseq/3.9/docs/images/nf-core-rnaseq_metro_map_grey.png)
+
+- [nf.core RNA-seq pipeline](https://nf-co.re/rnaseq)
+
 We have customised some of the options of the pipeline so run a reduced number of steps
 
 ```{bash}
@@ -126,25 +129,53 @@ The output from the workflow will be written to a directory `nf_results`, which 
 Run the script `run_nextflow.sh` (around ~10 minutes) and afterwards look at the output in the `nf_results` folder and familiarise yourself with the outputs. What extra steps have been performed in addition to the script that we created earlier?
 </div>
 
+## What software does nextflow use in it's pipeline?
 
-You should notice that the nf.core pipeline has produced quantification files for each sample, and also combined the `salmon` outputs into a single file. It also run some QC plots from the DESeq2 R package. However, R is not part of our software environment.
+You should notice that the nf.core pipeline has produced quantification files for each sample, and also combined the `salmon` outputs into a single file. It also run some QC plots from the DESeq2 R package. However, R is not part of our software environment. We can see this by running the following commands which would usually report the path that R is located at, or run the command-line R.
 
 
 ```
 which R
+R
 ```
 
+nextflow has it's own way of installing and running software which does not depend on the operating system that is being used to run the pipeline. This is specified by this part of the run script.
+
+- [nf.core profile options](https://nf-co.re/rnaseq/3.9/usage#profile)
+
+```
+-profile singularity 
+```
+
+In fact, we could have run the pipeline if we didn't have `salmon` and `fastqc` installed. The implication of this being that you can re-run the pipeline on your own machine or HPC environment with minimal software installation. The only dependancies are `nextflow` itself (which in turn requires `java`) and some *containerisation* or package management software such as `singularity`, `docker` or `conda`. This is a significantly easier requirement to fulfill than having to install each piece of software individually.
+
+<div class="information">
+If you are using a HPC environment you will probably want to keep the singularity option in the profile. 
+</div>
 
 ## Re-running the pipeline
 
-
+<div class="exercise">
 **Exercise**
 There are two fastq files in our `fastq` folder that have not yet been analysed; `ERR732908` and `ERR732909`. Use the `nano` editor to modify the samplesheet `nf_samplesheet.csv` to include information about these file, and re-run the pipeline. What do you notice about the time taken to run the pipeline?
 </div>
 
 
+The pipeline should be quicker this time around. This is because we had all the software downloaded and installed from the previous run. However, it still re-analysed the first seven samples from the samplesheet. If we want a report on what analyses have been performed and how long they took we can look at a report from the command-line
 
+```
+## You will have to use auto-complete and choose the most-recent report
+cat nf_results/pipeline/execution_trace
+```
+There is also a HTML version of the report that we can view through the file system.
 
+## Resuming a pipeline
 
-Adding the `resume` option to the script
+Ideally, we would like the pipeline to detect what jobs have been run successfully and not repeat those jobs. 
 
+```
+nextflow run nf-core/rnaseq -profile singularity \
+-resume \
+```
+
+The pipeline now runs significantly quicker because it detects that all the analyses have been completed and *cached*. If we check the `execution_trace` text file for this latest run it should say that most tasks were `CACHED` - meaning that the results from the previous analysis was used.
