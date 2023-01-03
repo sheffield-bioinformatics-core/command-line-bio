@@ -1,4 +1,5 @@
 nextflow run nf-core/rnaseq -profile singularity \
+-r 3.8.1 \
 --skip_alignment \
 --skip_trimming \
 --pseudo_aligner salmon \
