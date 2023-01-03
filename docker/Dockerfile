@@ -101,7 +101,7 @@ RUN mkdir singularity-cache
 RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-fastqc-0.11.9--0.img https://depot.galaxyproject.org/singularity/fastqc:0.11.9--0
 RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-bioconductor-summarizedexperiment-1.20.0--r40_0.img https://depot.galaxyproject.org/singularity/bioconductor-summarizedexperiment:1.20.0--r40_0
 RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-bioconductor-tximeta-1.8.0--r40_0.img https://depot.galaxyproject.org/singularity/bioconductor-tximeta:1.8.0--r40_0
-RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-multiqc-1.13--pyhdfd78af_0.img https://depot.galaxyproject.org/singularity/multiqc:1.13--pyhdfd78af_0
+RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-multiqc-1.11--pyhdfd78af_0.img https://depot.galaxyproject.org/singularity/multiqc:1.11--pyhdfd78af_0
 RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-perl-5.26.2.img https://depot.galaxyproject.org/singularity/perl:5.26.2
 RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-python-3.9--1.img https://depot.galaxyproject.org/singularity/python:3.9--1
 RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-salmon-1.5.2--h84f40af_0.img https://depot.galaxyproject.org/singularity/salmon:1.5.2--h84f40af_0
