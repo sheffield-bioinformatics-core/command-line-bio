@@ -30,7 +30,7 @@ We first make sure that we are located in the directory with our fastq files
 
 ```{bash eval=FALSE}
 cd /data
-ls
+ls fastq
 ```
 
 We will typically need some reference data for the alignment. These files have already been provided for you, but it good to know where they might be obtained.
@@ -58,12 +58,12 @@ Files can be downloaded by clicking on the relevant link. However, we want to do
 *To avoid duplication. check first (with I.T or local Bioinformaticians) that you don't have a local copy of reference genomes on your file system*
 </div>
 
-## Exercise
 <div class="exercise">
-We will also need the Human reference genome sequence for chromosome 22. Download the repeat-masked (`rm`) version of this sequence to the `ref_data` folder.
-
+## Exercise
+We will also need the Human reference genome sequence (DNA FASTA) for chromosome 22. Download the repeat-masked (`rm`) version of this sequence to the `ref_data` folder using the command-line.
 </div>
 
+## Other sources of reference data
 
 <div class="information">
 We also recommend obtaining reference genomes from the AWS iGenomes project
@@ -109,17 +109,18 @@ salmon quant --help-reads
 We need to specify the path of the index we have just created in the previous step, locations of our `fastq` files, and the library type (if unsure the option A can be used. See the help page for more options https://salmon.readthedocs.io/en/latest/salmon.html#what-s-this-libtype). We can specify where `salmon` write it's output files to, but this directory does not need to exist prior to running the command.
 
 ```{bash eval=FALSE}
-salmon quant -i index/GRCh38_salmon --libType A -r ERR732901_sub.fastq.gz -o quant/ERR732901
+salmon quant -i index/GRCh38_salmon --libType A -r fastq/ERR732901_sub.fastq.gz -o quant/ERR732901
 
 ```
 
 <div class="exercise">
 
-> ## Challenge 1 {.challenge}
-> 
-> Navigate to the quant folder and explore the files that salmon has created.
-> What file contains the quantifications? 
-> Use the salmon documentation to understand the various output files https://salmon.readthedocs.io/en/latest/file_formats.html#fileformats
+## Exercise
+ 
+ Navigate to the quant folder and explore the files that salmon has created.
+ What file contains the quantifications? 
+ How many reads map to transcript `ENST00000401609`? Can you find this using a single command?
+ Use the salmon documentation to understand the various output files https://salmon.readthedocs.io/en/latest/file_formats.html#fileformats
 
 </div>
 
@@ -144,6 +145,9 @@ hisat2-build ref_data/Homo_sapiens.GRCh38.dna_rm.chromosome.22.fa index/GRCh38_h
 The command to align a specific sample is `hisat2` which requires arguments for the index location (`-x`), `fastq` file to be aligned (`-U`) and location of the output file (`-S`). Many other arguments can be used, but we will accept the defaults
 
 ```{bash}
+## Need to make sure aligned_reads folder is already present
+mkdir -p aligned_reads
+
 hisat2 -x index/GRCh38_hisat2 -U fastq/ERR732901_sub.fastq.gz -S aligned_reads/ERR732901.sam
 ```
 
@@ -212,10 +216,9 @@ samtools index aligned_reads/ERR732901.sorted.bam
 
 <div class="exercise">
 
-> ## Challenge 2 {.challenge}
-> 
-> The samtools suite also includes the flagstat and idxstats tools to derive some QC from the alignment. Use the output from these tools to determine; the % of mapped reads, the number of reads mapped to chromosome 22
->
+## Exercise
+ 
+The samtools suite also includes the flagstat and idxstats tools to derive some QC from the alignment. Use the output from these tools to determine; the % of mapped reads, the number of reads mapped to chromosome 22
 
 </div>
 

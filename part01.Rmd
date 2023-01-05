@@ -58,8 +58,11 @@ Before we can begin the analysis, we need to make our raw sequencing data access
 Lets create a temporary directory to test these tools:-
 
 ```{bash eval=FALSE}
+## cd is a shortcut to navigate to the home directory
 cd
+## mkdir will create a new directory
 mkdir tmp
+## navigate to that new directory
 cd tmp
 ```
 

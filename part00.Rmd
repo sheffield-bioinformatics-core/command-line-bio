@@ -1,5 +1,5 @@
 ---
-title: "COurse Overview"
+title: "Course Overview"
 author: "Mark Dunning"
 date: '`r format(Sys.time(), "Last modified: %d %b %Y")`'
 output:
@@ -59,9 +59,34 @@ Please see below for an introduction / refresher
 
 If attending a version of this workshop running by the Sheffield Bioinformatics Core, you will get access to a fully-working Unix environment that can be accessed from your web-browser. As part of the course setup will receive a web-address that is unique to each participant. **These will only work for the duration of the workshop**. 
 
+**You will receive a link to a spreadsheet containing a set of IP Addresses for each participant**
+
+Enter the following address in your web browser, replacing **IP_ADDRESS** with your own **IP**.
+
+```
+http://IP_ADDRESS:6901/?password=vncpassword
+```
+
+e.g. 
+
+```
+http://3.8.149.23:6901/?password=vncpassword
+```
+
+
+Or the following will prompt you for a password, which is `vncpassword`.
+
+```
+http://IP_ADDRESS:6901
+```
+
 ![](images/vnc_desktop.PNG)
 
-This environment has some of the features common to a desktop environment such as Windows or Max OSX, but is also able to run command-line tools. We have pre-installed several NGS tools for workshop
+This environment has some of the features common to a desktop environment such as Windows or Max OSX, but is also able to run command-line tools. We have pre-installed several NGS tools for workshop.
+
+Once the environment has been opened, a new Terminal can be opened using the Applications menu (top-left) and selecting Termainal Emulator (second option down). We will be using this terminal for the majority of the workshop.
+
+
 
 
 ## Running the environment on your own machine after the workshop
@@ -93,10 +118,10 @@ Docker is an open platform for developers to build and ship applications, whethe
 - [Windows 10 Professional](https://www.docker.com/docker-windows)
 - [Other Windows](https://download.docker.com/win/stable/DockerToolbox.exe)
 
-Once you have installed Docker using the instructions above, you can open a terminal (Mac) or command prompt (Windows) and type the following to run the Day 1 environment
+Once you have installed Docker using the instructions above, you can open a terminal (Mac) or command prompt (Windows) and type the following to run the environment
 
 ```
-docker run -v --rm -d -p 5901:5901 -p 6901:6901 --privileged sheffieldbioinformatics/unix-training
+docker run  --rm -d -p 5901:5901 -p 6901:6901 --privileged sheffieldbioinformatics/unix-training
 ```
 
 Entering the address in your web browser should display the environment
@@ -104,6 +129,8 @@ Entering the address in your web browser should display the environment
 ```
 http://localhost:6901/?password=vncpassword
 ```
+
+
 
 
 ### Using the environment to analyse your own data
@@ -115,7 +142,7 @@ However, adding an `-v` argument allows certain folders on your own OS to be vis
 Assuming the files I want to analyse are to be found in the folder `PATH_TO_FASTQ`, the following command would map that directory to the folder `/data`
 
 ```
-docker run -v --rm -d -p 5901:5901 -p 6901:6901 --privileged -v /PATH_TO_FASTQ/:/data sheffieldbioinformatics/unix-training
+docker run --rm -d -p 5901:5901 -p 6901:6901 --privileged -v /PATH_TO_FASTQ/:/data sheffieldbioinformatics/unix-training
 
 ```
 
