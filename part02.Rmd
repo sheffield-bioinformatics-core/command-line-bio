@@ -33,7 +33,11 @@ cd /data
 ls fastq
 ```
 
-We will typically need some reference data for the alignment. These files have already been provided for you, but it good to know where they might be obtained.
+We will typically need some reference data for the alignment. Most of these files have already been provided for you, but it good to know where they might be obtained.
+
+<div class="information">
+A reference genome will nearly always be required, so the next few steps will still be applicable if you are not doing RNA-seq
+</div>
 
 ## Obtaining reference data
 
@@ -144,7 +148,7 @@ hisat2-build ref_data/Homo_sapiens.GRCh38.dna_rm.chromosome.22.fa index/GRCh38_h
 
 The command to align a specific sample is `hisat2` which requires arguments for the index location (`-x`), `fastq` file to be aligned (`-U`) and location of the output file (`-S`). Many other arguments can be used, but we will accept the defaults
 
-```{bash}
+```{bash eval=FALSE}
 ## Need to make sure aligned_reads folder is already present
 mkdir -p aligned_reads
 
@@ -247,5 +251,5 @@ bwa mem
 
 </div>
 
-
+<a href="part03.nb.html" style="font-size: 50px; text-decoration: none">Click Here for next part</a>
 
