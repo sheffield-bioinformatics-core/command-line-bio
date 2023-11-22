@@ -58,7 +58,9 @@ We will assume that you already have a working knowledge of using a command-line
 
 Please see below for an introduction / refresher
 
-- [https://datacarpentry.org/shell-genomics/01-introduction/](Command Line for Genomics)
+- [Introducing the Shell](https://datacarpentry.org/shell-genomics/01-introduction)
+- [Navigating Files and Directories](https://datacarpentry.org/shell-genomics/02-the-filesystem.html)
+- [Working with Files and Directories](https://datacarpentry.org/shell-genomics/02-the-filesystem.html)
 - [Unix Cheatsheet](https://upload.wikimedia.org/wikipedia/commons/7/79/Unix_command_cheatsheet.pdf)
 
 
