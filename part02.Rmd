@@ -29,7 +29,7 @@ A much reduced dataset will be used for illustration although the commands used 
 We first make sure that we are located in the directory with our fastq files
 
 ```{bash eval=FALSE}
-cd /data
+cd /home/dcuser/rnaseq_data
 ls fastq
 ```
 
@@ -62,9 +62,16 @@ Files can be downloaded by clicking on the relevant link. However, we want to do
 *To avoid duplication. check first (with I.T or local Bioinformaticians) that you don't have a local copy of reference genomes on your file system*
 </div>
 
+The reference transcripts for chromosome 22 have already been downloaded and can be found in the folder `/home/dcuser/rnaseq_data/ref_data`
+
+```
+ls /home/dcuser/rnaseq_data/ref_data
+```
+
+
 <div class="exercise">
 ## Exercise
-We will also need the Human reference genome sequence (DNA FASTA) for chromosome 22. Download the repeat-masked (`rm`) version of this sequence to the `ref_data` folder using the command-line.
+For our analysis we will also need the Human reference genome sequence (DNA FASTA) for chromosome 22. Download the repeat-masked (`rm`) version of this sequence from Ensembl to the `ref_data` folder using the command-line. 
 </div>
 
 ## Other sources of reference data
