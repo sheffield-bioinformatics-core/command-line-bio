@@ -95,6 +95,14 @@ This environment has some of the features common to a desktop environment such a
 
 Once the environment has been opened, a new Terminal can be opened using the Applications menu (top-left) and selecting Terminal Emulator (second option down). We will be using this terminal for the majority of the workshop.
 
+Before proceeding, we need to enter the following command in the Terminal window and then press ENTER.
+
+```
+HOME=/home/dcuser
+```
+
+![](images/set_home.png)
+
 <a href="part01.nb.html" style="font-size: 50px; text-decoration: none">Click Here for next part</a>
 
 

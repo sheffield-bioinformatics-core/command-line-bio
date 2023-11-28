@@ -58,11 +58,8 @@ Before we can begin the analysis, we need to make our raw sequencing data access
 Lets create a temporary directory to test these tools:-
 
 ```{bash eval=FALSE}
-## cd is a shortcut to navigate to the home directory
 cd
-## mkdir will create a new directory
 mkdir tmp
-## navigate to that new directory
 cd tmp
 ```
 
@@ -99,9 +96,10 @@ include...
 
 
 ```
-@SRR1552445.1 DCV4KXP1:223:C2CTUACXX:1:1101:1390:2246 length=100
-TGATTTTAAAAAAACACTTAACACATCTAGATAGAATAGTACTCTGCCCTATTTGAGGGAACAGTCTCAAACNATGAAGTACATGATATTTAATGCCCTA
-+SRR1552445.1 DCV4KXP1:223:C2CTUACXX:1:1101:1390:2246 length=100
+@SRR2584863.1 HWI-ST957:244:H73TDADXX:1:1101:4712:2181/1
+TTCACATCCTGACCATTCAGTTGAGCAAAATAGTTCTTCAGTGCCTGTTTAACCGAGTCACGCAGGGGTTTTTGGGTTACCTGATCCTGAGAGTTAACGGTAGAAACGGTCAGTACGTCAGAATTTACGCGTTGTTCGAACATAGTTCTG
++
+CCCFFFFFGHHHHJIJJJJIJJJIIJJJJIIIJJGFIIIJEDDFEGGJIFHHJIJJDECCGGEGIIJFHFFFACD:BBBDDACCCCAA@@CA@C>C3>@5(8&>C:9?8+89<4(:83825C(:A#########################
 ```
 
 
@@ -113,7 +111,7 @@ represents the numerical quality score for an individual nucleotide. For example
 above, the quality score line is:
 
 ```
-CCCFFFFFHHHHHJJJJJJJJIJJJJJJJJIGIGBDFHIIJJJIJJJJJJJJJJIGIIJIIJJJHHHHHHFF#,;ACDDDDDDFDDDEEFEEEDCDDDDD
+CCCFFFFFGHHHHJIJJJJIJJJIIJJJJIIIJJGFIIIJEDDFEGGJIFHHJIJJDECCGGEGIIJFHFFFACD:BBBDDACCCCAA@@CA@C>C3>@5(8&>C:9?8+89<4(:83825C(:A#########################
 ```
 
 The numerical value assigned to each of these characters depends on the
@@ -133,6 +131,14 @@ incorrect. This quality score is logarithmically based, so a quality score of 10
 base call accuracy of 90%, but a quality score of 20 reflects a base call accuracy of 99%.
 These probability values are the results from the base calling algorithm and depend on how
 much signal was captured for the base incorporation.
+
+
+```
+@SRR2584863.1 HWI-ST957:244:H73TDADXX:1:1101:4712:2181/1
+TTCACATCCTGACCATTCAGTTGAGCAAAATAGTTCTTCAGTGCCTGTTTAACCGAGTCACGCAGGGGTTTTTGGGTTACCTGATCCTGAGAGTTAACGGTAGAAACGGTCAGTACGTCAGAATTTACGCGTTGTTCGAACATAGTTCTG
++
+CCCFFFFFGHHHHJIJJJJIJJJIIJJJJIIIJJGFIIIJEDDFEGGJIFHHJIJJDECCGGEGIIJFHFFFACD:BBBDDACCCCAA@@CA@C>C3>@5(8&>C:9?8+89<4(:83825C(:A#########################
+```
 
 
 
@@ -160,7 +166,6 @@ ls
 The `tar` command with the options `zxvf` (look these up if you want to understand more) can be used to create a directory structure containing all the files.
 
 ```{bash eval=FALSE}
-## tar is a function for organising files into a single file
 tar zxvf archive.tar.gz
 ls
 ```
@@ -193,13 +198,13 @@ md5sum fastq/Sample1/Sample1_sub.fastq
 <div class="exercise">
  1. Download the pre-computed md5sums available at `http://sbc.shef.ac.uk/data/archive_md5.txt`. 
  2. Print the contents of this file and verify that the sum for Sample1.fastq is correct
- 3. The md5sum command is able to check the md5sums for a collection of files against some pre-computed values. Use documentation (and google!) to discover how to do this for all the files contained in `archive.tar.gz`
+ 3. The md5sum command is able to check the md5sums for a collection of files against some pre-computed values. Use documentation (and google!) to discover how to do this for the files we have downloaded.
 </div>
 
 
 
 
-##  Obtaining public data
+##  Obtaining public data and About the example data
 
 A good resource for obtaining public data is the SRA explorer.
 
@@ -225,23 +230,16 @@ If the identifier is recognised the names of samples belonging to the dataset wi
 For this particular dataset we created a download script using the links provided by SRA explorer. To keep the run-time of the workshop short (and to keep computing requirements down), each raw file was subset to a more manageable amount.
 
 <div class="information">
-The code used to download the example dataset can be found in `/data/scripts/download_subset.sh`. You do not need to run this as part of the workshop - it is just for information, or if you wanted to repeat the workshop in your own environment.
+The code used to download the example dataset can be found in `/home/dcuser/rnaseq_data/scripts/download_subset.sh`. You do not need to run this as part of the workshop - it is just for information, or if you wanted to repeat the workshop in your own environment.
 </div>
 
-### Using sharc (**UoS-specific**)
+The example dataset consists of nine raw (fastq files). The files are named according to names assigned when the data were uploaded to the public repository. We can use a sample sheet to associate each of these database names to something more memorable, and eventually the biological conditions being studied (beyond the scope of what we will cover today)
 
-The University of Sheffield has a High-performance Computing (HPC) cluster called [ShARC](https://www.sheffield.ac.uk/cics/research/hpc/sharc) that you will probably use to perform your analysis. 
-
-FTP software such as Cyberduck (Mac OSX), WinSCP (Windows) or Filezilla will allow you to connect and copy the files in a drag-and-drop manner.
-
-
-You can also copy files to this cluster from your own machine with the secure copy (`scp`) command or `rsnyc`.
-
-```{bash eval=FALSE}
-scp archive.tar.gz md1mjdx@sharc.shef.ac.uk:/shared/bioinformatics_core1/Shared/work
-```
-
-Your research group may already have storage space on ShARC that is accesible from your desktop, in which case you can drag and drop files. See the UoS website for more information on this storage [https://www.sheffield.ac.uk/cics/research-storage](https://www.sheffield.ac.uk/cics/research-storage)
+| fastq     | Sample | Condition   |
+|-----------|--------|-------------|
+| ERR732901_sub | CTR_1  | Control     |
+| ERR732901_sub | TGF_1  | TGF_Treated |
+| ...       | ...    | ...         |
 
 
 # Assessing Quality using FastQC
@@ -285,7 +283,7 @@ We will be working with a set of sample data that is located in the directory (`
 Navigate to your FASTQ dataset: 
 
 ```{bash eval=FALSE}
-cd /data/
+cd /home/dcuser/rnaseq_data
 ```
 
 
@@ -352,7 +350,7 @@ with these output files soon. The `.html` file is a stable webpage
 displaying the summary report for each of our samples.
 
 We want to keep our data files and our results files separate, so we
-will move these output files into a new directory within our `results/` directory. If this directory does not exist, we will have to create it.
+will move these output files into a new directory (say `qc`). If this directory does not exist, we will have to create it.
 
 ```{bash eval=FALSE}
 ## -p flag stops a message from appearing if the directory already exists
@@ -366,7 +364,7 @@ mv fastq/*.zip qc/
 
 It can be quite tiresome to click through multiple QC reports and compare the results for different samples. It is useful to have all the QC plots on the same page so that we can more easily spot trends in the data.
 
-The multiqc tool has been designed for the tasks of aggregating qc reports and combining into a single report that is easy to digest.
+The `multiqc` tool has been designed for the tasks of aggregating qc reports and combining into a single report that is easy to digest.
 
 ```{bash eval=FALSE}
 multiqc
@@ -388,19 +386,5 @@ firefox qc/ERR732901_sub.fastqc.html
 ```
 
 If this doesn't work, there is a File Explorer tool available in the desktop environment that you can use to navigate to, and view the files.
-
-## Challenge 3 {.challenge}
-<div class="exercise"> 
-Discuss your results with a neighbour. 
-- Which samples most the highest / lowest number of reads
-- Which sample(s) looks the best in terms of per base sequence quality? - Which sample(s) look the worst?
-</div>
-
-
-<div class="information">
-Both `fastqc` and `multiqc` are available as *software modules* on the Sheffield HPC
-
-
-</div>
 
 <a href="part02.nb.html" style="font-size: 50px; text-decoration: none">Click Here for next part</a>
