@@ -23,22 +23,6 @@ RUN conda config --add channels conda-forge
 RUN conda install multiqc
 
 WORKDIR /tmp
-RUN wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.36.zip
-RUN unzip Trimmomatic-0.36.zip
-ENV TRIMMOMATIC /tmp/Trimmomatic-0.36/trimmomatic-0.36.jar
-
-
-RUN wget https://github.com/pachterlab/kallisto/releases/download/v0.45.0/kallisto_linux-v0.45.0.tar.gz
-RUN tar zxvf kallisto_linux-v0.45.0.tar.gz
-RUN ln -s /tmp/kallisto_linux-v0.45.0/kallisto /usr/bin/
-
-RUN wget https://github.com/deweylab/RSEM/archive/v1.3.1.tar.gz
-RUN tar zxvf v1.3.1.tar.gz
-WORKDIR RSEM-1.3.1 
-RUN make
-RUN make install 
-
-WORKDIR /tmp
 RUN wget https://github.com/COMBINE-lab/salmon/releases/download/v1.2.1/salmon-1.2.1_linux_x86_64.tar.gz
 RUN ls
 RUN tar xvzf salmon-1.2.1_linux_x86_64.tar.gz
@@ -46,13 +30,6 @@ RUN tar xvzf salmon-1.2.1_linux_x86_64.tar.gz
 RUN chmod +x /tmp/salmon-latest_linux_x86_64/bin/salmon
 RUN ln -s /tmp/salmon-latest_linux_x86_64/bin/salmon /usr/bin
 
-COPY hisat2-2.2.1-Linux_x86_64.zip /tmp
-RUN unzip hisat2-2.2.1-Linux_x86_64.zip
-RUN ln -s /tmp/hisat2-2.2.1/hisat2 /usr/bin
-RUN ln -s /tmp/hisat2-2.2.1/hisat2-build /usr/bin
-RUN wget --no-check-certificate -O  subread.tar.gz https://sourceforge.net/projects/subread/files/subread-2.0.3/subread-2.0.3-Linux-x86_64.tar.gz/download
-RUN tar zxvf subread.tar.gz
-RUN ln -s /tmp/subread-2.0.3-Linux-x86_64/bin/* /usr/bin
 
 
 
@@ -64,8 +41,6 @@ RUN apt-get update && apt-get install -y software-properties-common sudo && \
     echo oracle-java17-installer shared/accepted-oracle-license-v1-3 select true | sudo /usr/bin/debconf-set-selections && \
     apt-get install -y oracle-java17-installer && \
     apt install oracle-java17-set-default
-RUN curl -s https://get.nextflow.io | bash
-RUN ln -s /tmp/nextflow /usr/bin
 
 
 ## install singularity
@@ -97,7 +72,57 @@ WORKDIR /home
 
 ## Download nf.core cache images to make workflow quicker
 
-RUN mkdir singularity-cache
+WORKDIR /tmp
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+RUN unzip awscliv2.zip
+RUN sudo ./aws/install
+RUN curl -fsSL https://ewels.github.io/AWS-iGenomes/aws-igenomes.sh > /usr/bin/aws-igenomes.sh
+RUN chmod +x /usr/bin/aws-igenomes.sh
+
+
+
+RUN useradd dcuser -m -d /home/dcuser -G sudo -s /bin/bash
+RUN chown dcuser /home/dcuser
+
+
+USER dcuser
+RUN mkdir -p /home/dcuser/shell_data
+RUN mkdir -p /home/dcuser/rnaseq_data
+
+COPY dc_sample_data.zip /home/dcuser/shell_data
+WORKDIR /home/dcuser/shell_data
+RUN unzip dc_sample_data.zip
+RUN rm dc_sample_data.zip
+
+WORKDIR /home/dcuser/rnaseq_data/
+
+
+RUN mkdir /home/dcuser/rnaseq_data/scripts
+RUN mkdir /home/dcuser/rnaseq_data/fastq
+RUN mkdir /home/dcuser/rnaseq_data/ref_data
+COPY nf_samplesheet.csv /home/dcuser/rnaseq_data/
+COPY fastq/*_sub.fastq.gz /home/dcuser/rnaseq_data//fastq/
+COPY scripts/* /home/dcuser/rnaseq_data/scripts/
+RUN dos2unix -n scripts/get_ref_for_nextflow.sh scripts/get_ref_for_nextflow2.sh
+RUN mv scripts/get_ref_for_nextflow2.sh scripts/get_ref_for_nextflow.sh
+RUN dos2unix -n scripts/run_nextflow.sh scripts/run_nextflow2.sh
+RUN mv scripts/run_nextflow2.sh scripts/run_nextflow.sh
+COPY Homo_sapiens.GRCh38.cdna.chr22.fa /home/dcuser/rnaseq_data/ref_data
+COPY Homo_sapiens.GRCh38.108.chr22.gtf  /home/dcuser/rnaseq_data/ref_data
+
+#RUN wget https://ndownloader.figshare.com/articles/3219673?private_link=f5d63d8c265a05618137 -O fastq.zip
+
+#RUN unzip fastq.zip -d /home/dcuser/rnaseq_data/
+#RUN rm fastq.zip
+#RUN rm /home/dcuser/rnaseq_data/chr1*
+
+#RUN rm /home/dcuser/rnaseq_data/targets2.txt
+
+WORKDIR /home/dcuser/rnaseq_data
+RUN curl -s https://get.nextflow.io | bash
+RUN chmod +x /home/dcuser/rnaseq_data/nextflow
+
+RUN mkdir /home/dcuser/rnaseq_data/singularity-cache
 RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-fastqc-0.11.9--0.img https://depot.galaxyproject.org/singularity/fastqc:0.11.9--0
 RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-bioconductor-summarizedexperiment-1.20.0--r40_0.img https://depot.galaxyproject.org/singularity/bioconductor-summarizedexperiment:1.20.0--r40_0
 RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-bioconductor-tximeta-1.8.0--r40_0.img https://depot.galaxyproject.org/singularity/bioconductor-tximeta:1.8.0--r40_0
@@ -110,37 +135,12 @@ RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-ubunt
 #RUN singularity pull singularity-cache/singularity-cache/depot.galaxyproject.org-singularity-mulled-v2-8849acf39a43cdd6c839a369a74c0adc823e2f91-ab110436faf952a33575c64dd74615a84011450b-0.img https://depot.galaxyproject.org/singularity/mulled:v2-8849acf39a43cdd6c839a369a74c0adc823e2f91-ab110436faf952a33575c64dd74615a84011450b-0
 
 
-ENV NXF_SINGULARITY_CACHEDIR=/home/singularity-cache
-
-RUN mkdir /data
-WORKDIR /data
-
-RUN mkdir /data/ref_data
-COPY Homo_sapiens.GRCh38.cdna.chr22.fa /data/ref_data
-COPY Homo_sapiens.GRCh38.108.chr22.gtf  /data/ref_data
-
-
-
-WORKDIR /tmp
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-RUN unzip awscliv2.zip
-RUN sudo ./aws/install
-RUN curl -fsSL https://ewels.github.io/AWS-iGenomes/aws-igenomes.sh > /usr/bin/aws-igenomes.sh
-RUN chmod +x /usr/bin/aws-igenomes.sh
-
-WORKDIR /data
-
-
-RUN mkdir /data/scripts
-RUN mkdir /data/fastq
-COPY nf_samplesheet.csv /data/
-COPY fastq/*_sub.fastq.gz /data/fastq/
-COPY scripts/* /data/scripts/
-RUN dos2unix scripts/get_ref_for_nextflow.sh
-RUN dos2unix scripts/run_nextflow.sh
-
-
-
+ENV NXF_SINGULARITY_CACHEDIR=/home/dcuser/rnaseq_data/singularity-cache
+WORKDIR /home/dcuser/rnaseq_data
+RUN salmon index -i index/GRCh38_salmon -t ref_data/Homo_sapiens.GRCh38.cdna.chr22.fa
+WORKDIR /home/dcuser/
+RUN chmod 777 nf_samplesheeet.csv
+#ENV HOME=/home/dcuser
 ## build command
 ##docker build -t="sheffieldbioinformatics/unix-training ."
 
