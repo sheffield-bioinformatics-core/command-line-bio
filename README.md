@@ -22,7 +22,7 @@ sudo apt-get update
 sudo apt-get install -y docker.io
 sudo service docker start
 sudo usermod -aG docker $username
-sudo docker pull markdunning/rnaseq-toolbox
-docker run -p 6080:80 markdunning/rnaseq-toolbox
+sudo docker pull sheffieldbioinformatics/unix-training
+docker run -v --rm -d -p 5901:5901 -p 6901:6901 --privileged sheffieldbioinformatics/unix-training
 ```
 
