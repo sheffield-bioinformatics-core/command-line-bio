@@ -138,11 +138,15 @@ RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-ubunt
 ENV NXF_SINGULARITY_CACHEDIR=/home/dcuser/rnaseq_data/singularity-cache
 WORKDIR /home/dcuser/rnaseq_data
 RUN salmon index -i index/GRCh38_salmon -t ref_data/Homo_sapiens.GRCh38.cdna.chr22.fa
-WORKDIR /home/dcuser/
+
+WORKDIR /home/dcuser/rnaseq_data/
 RUN chmod 777 nf_samplesheeet.csv
+RUN wget https://ftp.ensembl.org/pub/release-108/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna_rm.chromosome.22.fa.gz -P ref_data
+RUN gunzip ref_data/Homo_sapiens.GRCh38.dna_rm.chromosome.22.fa.gz
+
 #ENV HOME=/home/dcuser
 ## build command
-##docker build -t="sheffieldbioinformatics/unix-training ."
+##docker build -t="sheffieldbioinformatics/unix-training" .
 
 ## run command
 ##docker run -v --rm -d -p 5901:5901 -p 6901:6901 --privileged sheffieldbioinformatics/unix-training
