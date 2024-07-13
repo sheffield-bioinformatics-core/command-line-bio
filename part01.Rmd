@@ -1,6 +1,6 @@
 ---
 title: "Assessing Read Quality"
-author: "Mark Dunning"
+author: "Mark Dunning - Sheffield Bioinformatics Core"
 date: '`r format(Sys.time(), "Last modified: %d %b %Y")`'
 output:
   html_notebook:
@@ -12,6 +12,8 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,eval=FALSE)
 ```
+
+![](images/logo-sm.png)
 
 (Adapted from the Data Carpentry Genomics wrangling materials at:- https://datacarpentry.org/wrangling-genomics/02-quality-control/index.html)
 
@@ -149,8 +151,6 @@ Since this file is so small, we needn't worry about the file size. However, in a
 gzip example_reads.fastq
 ## list the directory to see what changed...
 ls -lh
-## Now have to use zcat to print...
-zcat example_reads.fastq | head -n4
 ```
 
 
@@ -184,6 +184,8 @@ md5sum fastq/Sample1/Sample1.fastq
 ## help is available on the function
 md5sum --help
 ```
+
+(Optional)
 
 To see what would happen if a file didn't transfer properly, we can create a copy of `Sample1.fastq` containing fewer lines. The resulting md5sum will be different
 
@@ -387,4 +389,8 @@ firefox qc/ERR732901_sub.fastqc.html
 
 If this doesn't work, there is a File Explorer tool available in the desktop environment that you can use to navigate to, and view the files.
 
-<a href="part02.nb.html" style="font-size: 50px; text-decoration: none">Click Here for next part</a>
+<a href="part02.nb.html" style="font-size: 50px; text-decoration: none">Click Here for an optional section about alignment and quantification</a>
+
+or 
+
+<a href="part03.nb.html" style="font-size: 50px; text-decoration: none">Click Here to learn about workflows and pipelines</a>

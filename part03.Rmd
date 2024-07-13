@@ -1,6 +1,6 @@
 ---
 title: "Workflows, Pipeline and Workflow Managers"
-author: "Mark Dunning"
+author: "Mark Dunning - Sheffield Bioinformatics Core"
 date: '`r format(Sys.time(), "Last modified: %d %b %Y")`'
 output:
   html_notebook:
@@ -12,6 +12,8 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,eval=FALSE)
 ```
+
+![](images/logo-sm.png)
 
 # Why do we need a pipeline? How might we create one?
 
@@ -84,6 +86,20 @@ None of these issues are impossible to solve, but this isn't intended to be a wo
 - [nextflow](https://www.nextflow.io/)
 - [snakemake](https://snakemake.readthedocs.io/en/stable/)
 
+<div class="information">
+
+nextflow is available as a *module* on the University of Sheffield Stanage HPC.
+
+```
+module load Nextflow/23.10.0
+```
+
+- [https://docs.hpc.shef.ac.uk/en/latest/stanage/software/apps/nextflow.html](https://docs.hpc.shef.ac.uk/en/latest/stanage/software/apps/nextflow.html)
+- [Sheffield Bioinformatics Core documentation on nextflow and nf.core](https://sbc.shef.ac.uk/nf-core-user-docs/)
+
+</div>
+
+
 ## Running a nf.core pipeline
 
 In our opinion, nextflow is particular appealing as many popular Bioinformatics pipelines have already been written using nextflow and have been distributed as part of the nf.core project
@@ -97,10 +113,14 @@ We will be showing the RNA-seq pipeline in particular
 - [nf.core RNA-seq pipeline](https://nf-co.re/rnaseq)
 
 
-The minimum number of options required to run an nf.core pipeline such as RNA-seq are:-
+A minimal number of options required to run an nf.core pipeline such as RNA-seq are:-
 
 ```{bash}
-nextflow run nf-core/rnaseq --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile docker
+nextflow run nf-core/rnaseq \
+                  --input samplesheet.csv \
+                  --outdir <OUTDIR> \
+                  --genome GRCh37 \
+                  -profile docker\
 ```
 
 where:-
@@ -114,7 +134,7 @@ where:-
 We have customised some of the options of the pipeline so run a reduced number of steps are run for the workshop, and using a custom genome containing a single chromosome.
 
 ```{bash}
-cat scripts/run_nextflow.sh
+cat run_nextflow.sh
 ```
 
 The particular steps that we have modified are as follows:-
@@ -144,10 +164,9 @@ cat nf_samplesheet.csv
 ```
 
 
-Before we can run the pipeline we need to move (or copy) the script to the working folder
+We can run the pipeline as follows
 
 ```{bash}
-cp scripts/run_nextflow.sh /data
 bash run_nextflow.sh
 ```
 
@@ -225,7 +244,7 @@ ERR732905,fastq/ERR732905_sub.fastq.gz,,unstranded
 ERR732906,fastq/ERR732906_sub.fastq.gz,,unstranded
 ERR732907,fastq/ERR732907_sub.fastq.gz,,unstranded
 ERR732908,fastq/ERR732908_sub.fastq.gz,,unstranded
-ERR732907,fastq/ERR732909_sub.fastq.gz,,unstranded
+ERR732909,fastq/ERR732909_sub.fastq.gz,,unstranded
 ```
 
 

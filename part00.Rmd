@@ -1,6 +1,6 @@
 ---
 title: "Course Overview"
-author: "Mark Dunning"
+author: "Mark Dunning - Sheffield Bioinformatics Core"
 date: '`r format(Sys.time(), "Last modified: %d %b %Y")`'
 output:
   html_notebook:
@@ -13,7 +13,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
+![](images/logo-sm.png)
 
 # Overview
 
@@ -30,8 +30,11 @@ The workshop is designed to give you an introduction to using the command-line t
 ## Links to Individual Sections
 
 - [Transfering files and Assessing Read Quality](part01.nb.html)
-- [Alignment and Quantification](part02.nb.html)
+- [Alignment and Quantification - OPTIONAL](part02.nb.html)
 - [Workflows, Pipelines and Workflow Managers](part03.nb.html)
+
+
+
 
 # Objectives: After this course you should be able to:
 
@@ -47,20 +50,22 @@ The workshop is designed to give you an introduction to using the command-line t
 - A basic workflow for processing RNA-seq data
 - Workflow management systems (such as nextflow), and why they are a recommended approach for running Bioinformatics pipeline
 
-# Background
 
-We will assume that you already have a working knowledge of using a command-line environment to perform tasks such as:-
+We will also review some command-line basics to perform tasks such as:-
 
 - log into a command-line environment
 - listing the contents of a directory using `ls`
 - navigate through a file system using `cd`
 - moving and copying files using `cp` and `mv`
 
-Please see below for an introduction / refresher
+Please see below for a fuller introduction
 
 - [Introducing the Shell](https://datacarpentry.org/shell-genomics/01-introduction)
 - [Navigating Files and Directories](https://datacarpentry.org/shell-genomics/02-the-filesystem.html)
-- [Working with Files and Directories](https://datacarpentry.org/shell-genomics/02-the-filesystem.html)
+- [Working with Files and Directories](https://datacarpentry.org/shell-genomics/03-working-with-files.html)
+
+There is also a reference guide available for some common commands
+
 - [Unix Cheatsheet](https://upload.wikimedia.org/wikipedia/commons/7/79/Unix_command_cheatsheet.pdf)
 
 
@@ -103,10 +108,20 @@ HOME=/home/dcuser
 
 ![](images/set_home.png)
 
+
+## Command-line review
+
+We will now review the following sections of the Data Carpentry materials to (re-)familiarise ourselves with the Unix environment
+
+- [Introduction](https://datacarpentry.org/shell-genomics/01-introduction.html#navigating-your-file-system)
+- [Moving around the file system](https://datacarpentry.org/shell-genomics/02-the-filesystem.html#moving-around-the-file-system)
+- [Working with files](https://datacarpentry.org/shell-genomics/03-working-with-files.html#working-with-files)
+- [Creating, moving, copying and removing](https://datacarpentry.org/shell-genomics/03-working-with-files.html#creating-moving-copying-and-removing)
+
 <a href="part01.nb.html" style="font-size: 50px; text-decoration: none">Click Here for next part</a>
 
 
-## Running the environment on your own machine after the workshop
+# Running the environment on your own machine after the workshop
 
 Both Mac OSX and Windows 10 have the ability to run some of the commands presented in this course to navigate around a file system, copy files and list directories. However, you may prefer to practice in a "safe" environment, such as that used during the workshop. Furthermore, the NGS tools presented may be difficult to install. 
 
