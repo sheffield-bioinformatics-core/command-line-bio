@@ -140,7 +140,7 @@ WORKDIR /home/dcuser/rnaseq_data
 RUN salmon index -i index/GRCh38_salmon -t ref_data/Homo_sapiens.GRCh38.cdna.chr22.fa
 
 WORKDIR /home/dcuser/rnaseq_data/
-RUN chmod 777 nf_samplesheeet.csv
+RUN chmod 777 nf_samplesheet.csv
 RUN wget https://ftp.ensembl.org/pub/release-108/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna_rm.chromosome.22.fa.gz -P ref_data
 RUN gunzip ref_data/Homo_sapiens.GRCh38.dna_rm.chromosome.22.fa.gz
 
